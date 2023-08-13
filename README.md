@@ -1,4 +1,4 @@
-# Product Management Microservice
+# Product API Microservice
 
 This microservice provides capabilities for managing and searching products. It supports filtering, sorting, and grouping products based on brands.
 
@@ -10,12 +10,10 @@ This microservice provides capabilities for managing and searching products. It 
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
-The Product Management Microservice is a part of our microservices architecture and is responsible for handling product-related operations. It provides endpoints for creating, managing, and searching products based on user-defined criteria.
+The Product API microservice is a part of our microservices architecture and is responsible for handling product-related operations. It provides endpoints for creating, managing, and searching products based on user-defined criteria.
 
 ## Features
 
@@ -49,11 +47,13 @@ To get started with this microservice, follow these steps:
 
 ## Configuration
 
-The application configuration is managed in `application.yml`. You can customize database settings, logging, and other application properties there.
+The application configuration is managed in `application.yml`. You can customize database settings and other application properties there.
 
 ```properties
-# Example application.properties
-spring.datasource.url=jdbc:mysql://localhost:3306/productdb
-spring.datasource.username=root
-spring.datasource.password=root
+# Example application.yml
+spring:
+    datasource:
+        url=jdbc:mysql://localhost:3306/productdb
+        username=root
+        password=root
 ...

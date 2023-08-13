@@ -14,14 +14,14 @@ public class ProductConfiguration {
     @Bean
     CommandLineRunner commandLineRunner(ProductRepository repository) {
         return args -> {
-            Product meysam = new Product("Meysam", 10, "Amazon", true);
-            Product elham = new Product("Elham", 11, "aMazon", false);
-            Product ali = new Product("Ali", 12, "Google", true);
-            Product saeid = new Product("Saeid", 12, "google", false);
-            Product fereshteh = new Product("Fereshteh", 17, "amazon", true);
-            Product sonix = new Product("Sonix", 10, "bose", false);
-            Product mpower = new Product("MPower", 5, "amazon", true);
-            repository.saveAll(List.of(meysam, elham, ali, saeid, fereshteh, sonix, mpower));
+            Product iPhone14pro = new Product("iPhone14Pro", 1100.00, "Apple", true);
+            Product slmini = new Product("SoundLink Mini", 149.95, "Bose", false);
+            Product pixel7a = new Product("Pixel7A", 800.90, "Google", true);
+            Product slflex = new Product("SoundLink Flex", 164.95, "bose", true);
+            Product Pixel6a = new Product("Pixel61", 345.00, "gOogle", true);
+            Product iPhoneSE2 = new Product("iPhoneSE2", 750.90, "apple", false);
+            Product appleWatchUltra = new Product("AppleWatchUltra", 999.00, "aPple", true);
+            repository.saveAll(List.of(iPhone14pro, slmini, pixel7a, slflex, Pixel6a, iPhoneSE2, appleWatchUltra));
         };
     }
 
