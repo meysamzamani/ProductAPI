@@ -85,3 +85,15 @@ spring:
         username=root
         password=root
 ```
+### Indexing for Improved Query Performance
+
+Because of using the `ProductSpecifications` to filter products based on attributes like name and brand, database indexes play a crucial role in optimizing query performance. Indexes are data structures that allow the database to quickly retrieve and sort data, resulting in faster query execution.
+
+In the context of the Product API microservice, we should consider the scenarios where we perform queries that involve filtering by name or sorting by brand and price. Without proper indexes, the database engine would need to scan through the entire table to find the relevant data, which could lead to slower response times as the dataset grows.
+
+By creating appropriate indexes on the columns used in filtering and sorting, we can significantly enhance the speed of these queries. Specifically:
+
+- Creating an index on the `name` column would improve the efficiency of filtering products by name, making the retrieval of products with a specific brand much faster.
+- Creating a compound index on the `brand` and `price` columns would greatly improve the performance of queries that require sorting by brand and price. This index allows the database engine to quickly retrieve and order the data based on both attributes.
+
+To ensure optimal query performance, it's recommended to work closely with database administrator or team to identify the right indexing strategy based on the specific use cases and query patterns of application. Implementing proper indexes can have a substantial impact on the overall responsiveness and scalability of Product API microservice.
