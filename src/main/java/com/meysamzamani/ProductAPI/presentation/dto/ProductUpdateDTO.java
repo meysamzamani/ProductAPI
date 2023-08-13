@@ -3,7 +3,7 @@ package com.meysamzamani.ProductAPI.presentation.dto;
 public class ProductUpdateDTO {
 
     private String name;
-    private long price;
+    private double price;
     private String brand;
     private boolean onSale;
 
@@ -15,11 +15,11 @@ public class ProductUpdateDTO {
         this.name = name;
     }
 
-    public long getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
