@@ -67,4 +67,15 @@ public class Product {
     public void setOnSale(boolean onSale) {
         this.onSale = onSale;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", brand='" + brand + '\'' +
+                ", onSale=" + onSale +
+                '}';
+    }
 }
