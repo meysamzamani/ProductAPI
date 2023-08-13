@@ -27,15 +27,27 @@ The Product API microservice is a part of our microservices architecture and is 
 - Spring Boot
 - Spring Data JPA
 - Spring Web
+- Docker
 
 ## Getting Started
 
-To get started with this microservice, follow these steps:
+To get started with this microservice in your local IDE, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Open the project in your preferred Java IDE.
 3. Configure your database connection in `application.yml`.
-4. Build and run the application.
+4. Build and run the application in IDE.
+
+To get started in Docker, follow these steps:
+
+1. Clone this repository to your local machine.
+2. Configure your database connection in `application.yml`.
+2. Build and run the Docker image:
+
+```sh
+docker build -t product-api .
+docker run -p 8080:8080 product-api
+```
 
 ## Usage
 
@@ -56,4 +68,4 @@ spring:
         url=jdbc:mysql://localhost:3306/productdb
         username=root
         password=root
-...
+```
