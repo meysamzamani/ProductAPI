@@ -42,11 +42,27 @@ To get started in Docker, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Configure your database connection in `application.yml`.
-2. Build and run the Docker image:
+3. Build and run the Docker image:
 
 ```sh
 docker build -t product-api .
 docker run -p 8080:8080 product-api
+```
+4. The microservice should now be running. Access it at: http://localhost:8080
+
+> Note: By default, mockup data is provided when the application starts. If you prefer not to create mockup data, you can disable it by following the steps below.
+
+### Disabling Mockup Data
+If you want to disable the creation of mockup data when the application starts, you can do the following:
+
+1. Open the ProductConfiguration class located in com.meysamzamani.ProductAPI.configuration.
+2. Comment out or remove the CommandLineRunner bean definition that populates mockup data.
+
+```
+// @Bean
+// CommandLineRunner commandLineRunner(ProductRepository repository) {
+//     // ... mockup data creation logic
+// }
 ```
 
 ## Usage
