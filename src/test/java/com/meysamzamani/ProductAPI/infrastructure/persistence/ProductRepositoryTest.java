@@ -1,11 +1,14 @@
 package com.meysamzamani.ProductAPI.infrastructure.persistence;
 
 import com.meysamzamani.ProductAPI.domain.Product;
+import com.meysamzamani.ProductAPI.domain.ProductSpecifications;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,4 +74,99 @@ class ProductRepositoryTest {
         Optional<Product> productById = productRepositoryUnderTest.findById(id);
         assertFalse(productById.isPresent());
     }
+
+    @Test
+    void givenProducts_whenFindAllByCriteria_thenShouldEqualAndSorted() {
+        Product iPhone14pro = new Product("iPhone14Pro", 1100.00, "Apple", true);
+        Product slmini = new Product("SoundLink Mini", 149.95, "Bose", false);
+        Product pixel7a = new Product("Pixel7A", 800.90, "Google", true);
+        Product slflex = new Product("SoundLink Flex", 164.95, "bose", true);
+        Product Pixel6a = new Product("Pixel61", 345.00, "gOogle", true);
+        Product iPhoneSE2 = new Product("iPhoneSE2", 750.90, "apple", false);
+        Product appleWatchUltra = new Product("AppleWatchUltra", 999.00, "aPple", true);
+        productRepositoryUnderTest.saveAll(List.of(iPhone14pro, slmini, pixel7a, slflex, Pixel6a, iPhoneSE2, appleWatchUltra));
+
+        assertEquals(7, productRepositoryUnderTest.findAll().size());
+
+        Specification<Product> specification = Specification.where(null);
+        specification = specification.and(ProductSpecifications.brandEquals("Apple"));
+        specification = specification.and(ProductSpecifications.maxPrice(1000.00));
+
+        Sort sort = Sort.by(
+                Sort.Order.asc("brand").ignoreCase(),
+                Sort.Order.asc("price")
+        );
+
+        List<Product> actualProducts = productRepositoryUnderTest.findAll(specification, sort);
+
+        assertAll(
+                () -> assertNotNull(actualProducts),
+                () -> assertEquals(2, actualProducts.size()),
+                () -> assertEquals("iPhoneSE2", actualProducts.get(0).getName()),
+                () -> assertEquals("AppleWatchUltra", actualProducts.get(1).getName())
+        );
+    }
+
+    @Test
+    void givenProducts_whenFindAllByCriteria_thenShouldEmpty() {
+        Product iPhone14pro = new Product("iPhone14Pro", 1100.00, "Apple", true);
+        Product slmini = new Product("SoundLink Mini", 149.95, "Bose", false);
+        Product pixel7a = new Product("Pixel7A", 800.90, "Google", true);
+        Product slflex = new Product("SoundLink Flex", 164.95, "bose", true);
+        Product Pixel6a = new Product("Pixel61", 345.00, "gOogle", true);
+        Product iPhoneSE2 = new Product("iPhoneSE2", 750.90, "apple", false);
+        Product appleWatchUltra = new Product("AppleWatchUltra", 999.00, "aPple", true);
+        productRepositoryUnderTest.saveAll(List.of(iPhone14pro, slmini, pixel7a, slflex, Pixel6a, iPhoneSE2, appleWatchUltra));
+
+        assertEquals(7, productRepositoryUnderTest.findAll().size());
+
+        Specification<Product> specification = Specification.where(null);
+        specification = specification.and(ProductSpecifications.brandEquals("xiaomi"));
+        specification = specification.and(ProductSpecifications.maxPrice(1000.00));
+
+        Sort sort = Sort.by(
+                Sort.Order.asc("brand").ignoreCase(),
+                Sort.Order.asc("price")
+        );
+
+        List<Product> actualProducts = productRepositoryUnderTest.findAll(specification, sort);
+
+        assertAll(
+                () -> assertNotNull(actualProducts),
+                () -> assertEquals(0, actualProducts.size())
+        );
+    }
+
+    @Test
+    void givenProducts_whenFindAllByCriteria_thenShouldSortedByBrand() {
+        Product iPhone14pro = new Product("iPhone14Pro", 1100.00, "Apple", true);
+        Product slmini = new Product("SoundLink Mini", 149.95, "Bose", false);
+        Product pixel7a = new Product("Pixel7A", 800.90, "Google", true);
+        Product slflex = new Product("SoundLink Flex", 164.95, "bose", true);
+        Product Pixel6a = new Product("Pixel61", 345.00, "gOogle", true);
+        Product iPhoneSE2 = new Product("iPhoneSE2", 750.90, "apple", false);
+        Product appleWatchUltra = new Product("AppleWatchUltra", 999.00, "aPple", true);
+        productRepositoryUnderTest.saveAll(List.of(iPhone14pro, slmini, pixel7a, slflex, Pixel6a, iPhoneSE2, appleWatchUltra));
+
+        assertEquals(7, productRepositoryUnderTest.findAll().size());
+
+        Specification<Product> specification = Specification.where(null);
+        specification = specification.and(ProductSpecifications.maxPrice(700.00));
+
+        Sort sort = Sort.by(
+                Sort.Order.asc("brand").ignoreCase(),
+                Sort.Order.asc("price")
+        );
+
+        List<Product> actualProducts = productRepositoryUnderTest.findAll(specification, sort);
+
+        assertAll(
+                () -> assertNotNull(actualProducts),
+                () -> assertEquals(3, actualProducts.size()),
+                () -> assertEquals("Bose", actualProducts.get(0).getBrand()),
+                () -> assertEquals("bose", actualProducts.get(1).getBrand()),
+                () -> assertEquals("gOogle", actualProducts.get(2).getBrand())
+        );
+    }
+
 }

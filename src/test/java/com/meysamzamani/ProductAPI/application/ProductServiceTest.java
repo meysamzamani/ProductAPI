@@ -2,6 +2,7 @@ package com.meysamzamani.ProductAPI.application;
 
 import com.meysamzamani.ProductAPI.domain.Product;
 import com.meysamzamani.ProductAPI.infrastructure.persistence.ProductRepository;
+import com.meysamzamani.ProductAPI.presentation.dto.GroupedProductDTO;
 import com.meysamzamani.ProductAPI.presentation.dto.ProductUpdateDTO;
 import com.meysamzamani.ProductAPI.presentation.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +56,7 @@ public class ProductServiceTest {
     @Test
     void whenDeleteProduct_thenVerifyHierarchy() {
         Long productId = 10L;
-        Product product = new Product("iPhone14Pro", 1100.00, "Apple", true);
+        Product product = new Product(productId, "iPhone14Pro", 1100.00, "Apple", true);
 
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
 
@@ -75,7 +81,7 @@ public class ProductServiceTest {
     @Test
     void whenUpdateProduct_thenVerifySaveAndEquals() {
         Long productId = 10L;
-        Product existingProduct = new Product("iPhone14Pro", 1100.00, "Apple", true);
+        Product existingProduct = new Product(productId, "iPhone14Pro", 1100.00, "Apple", true);
 
         when(productRepository.findById(eq(productId))).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(any(Product.class))).thenReturn(existingProduct);
@@ -109,7 +115,7 @@ public class ProductServiceTest {
     @Test
     void whenGetProduct_thenVerifyFindById() {
         Long productId = 10L;
-        Product product = new Product("iPhone14Pro", 1100.00, "Apple", true);
+        Product product = new Product(productId, "iPhone14Pro", 1100.00, "Apple", true);
 
         when(productRepository.findById(anyLong())).thenReturn(Optional.of(product));
 
@@ -130,6 +136,19 @@ public class ProductServiceTest {
         assertThrows(NotFoundException.class, () -> productService.getProduct(productId));
 
         verify(productRepository, times(1)).findById(productId);
+    }
+
+    @Test
+    void whenSearchProduct_thenVerifyFindAll() {
+        Product product1 = new Product(1L, "Product A", 100.0, "Brand A", true);
+        Product product2 = new Product(2L, "Product B", 150.0, "Brand B", false);
+
+        when(productRepository.findAll(any(Specification.class), any(Sort.class)))
+                .thenReturn(Arrays.asList(product1, product2));
+
+        Map<String, List<GroupedProductDTO>> result = productService.searchProducts(null, null, null, null, null);
+
+        verify(productRepository, times(1)).findAll(any(Specification.class), any(Sort.class));
     }
 
 }
