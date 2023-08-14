@@ -65,6 +65,15 @@ If you want to disable the creation of mockup data when the application starts, 
 // }
 ```
 
+### Running Tests
+
+1. Navigate to the root directory of project in the command-line terminal.
+2. Execute the following command to run the tests:
+
+```
+./gradlew test
+```
+
 ## Usage
 
 - Create a product: Send a POST request to `api/v1.0/products` with product details.
