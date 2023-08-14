@@ -67,11 +67,78 @@ If you want to disable the creation of mockup data when the application starts, 
 
 ## Usage
 
-- Create a product: Send a POST request to `/products` with product details.
-- Update a product: Send a PUT request to `/products/{productId}` with updated details.
-- Delete a product: Send a DELETE request to `/products/{productId}`.
-- Retrieve all products: Send a GET request to `/products`.
-- Search and filter products: Send a GET request to `/products/search` with filtering parameters.
+- Create a product: Send a POST request to `api/v1.0/products` with product details.
+- Update a product: Send a PUT request to `api/v1.0/products/{productId}` with updated details.
+- Delete a product: Send a DELETE request to `api/v1.0/products/{productId}`.
+- Retrieve all products: Send a GET request to `api/v1.0/products`.
+- Search and filter products: Send a GET request to `api/v1.0/products/search` with filtering parameters.
+
+### Advanced Search Endpoint
+
+The Product API microservice offers a versatile search endpoint that allows you to retrieve products based on various filtering criteria. This endpoint supports searching for products using the following parameters:
+
+- `name`: Filter products by name. If provided, only products with names containing the specified string will be included in the result.
+
+- `minPrice`: Filter products by minimum price. Only products with prices greater than or equal to the provided value will be included.
+
+- `maxPrice`: Filter products by maximum price. Only products with prices less than or equal to the provided value will be included.
+
+- `brand`: Filter products by brand. Only products with the specified brand will be included.
+
+- `onSale`: Filter products by sale status. Set to `true` to include only products currently on sale.
+
+#### Endpoint Details
+
+- **URL**: `api/v1.0/products/search`
+- **Method**: GET
+- **Produces**: JSON
+- **Response Status**: 200 OK
+
+#### Request Parameters
+
+- `name` (optional): String value to filter products by name.
+- `minPrice` (optional): Double value to filter products by minimum price.
+- `maxPrice` (optional): Double value to filter products by maximum price.
+- `brand` (optional): String value to filter products by brand.
+- `onSale` (optional): Boolean value to filter products by sale status.
+
+#### Response
+
+The response from this endpoint is a JSON object containing a map where the keys represent brand names, and the values are lists of products grouped by the brand. Each product is represented by a `GroupedProductDTO` object.
+
+Example Response:
+
+```json
+{
+  "Apple": [
+    {
+      "id": 6,
+      "name": "iPhoneSE2",
+      "price": 750.9
+    },
+    {
+      "id": 1,
+      "name": "iPhone14Pro",
+      "price": 1100.0,
+      "event": "ON SALE"
+    }
+  ],
+  "Bose": [
+    {
+      "id": 2,
+      "name": "SoundLink Mini",
+      "price": 149.95
+    },
+    {
+      "id": 4,
+      "name": "SoundLink Flex",
+      "price": 164.95,
+      "event": "ON SALE"
+    }
+  ],
+  ...
+}
+```
 
 ## Configuration
 
