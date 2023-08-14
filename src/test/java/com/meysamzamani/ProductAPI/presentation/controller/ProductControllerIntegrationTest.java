@@ -10,9 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -134,5 +137,77 @@ class ProductControllerIntegrationTest {
                 () -> assertEquals("Apple", updatedProduct.get().getBrand()),
                 () -> assertFalse(updatedProduct.get().isOnSale()),
                 () -> assertEquals(1, productRepository.findAll().size()));
+    }
+
+    @Test
+    void givenProducts_whenSearch_thenShouldReturnGroupedProductsSortedByPrice() {
+        Product iPhone14pro = new Product("iPhone14Pro", 1100.00, "apple", true);
+        Product slmini = new Product("SoundLink Mini", 149.95, "Bose", false);
+        Product pixel7a = new Product("Pixel7A", 800.90, "gOogle", true);
+        Product slflex = new Product("SoundLink Flex", 164.95, "bose", true);
+        Product Pixel6a = new Product("Pixel61", 345.00, "Google", true);
+        Product iPhoneSE2 = new Product("iPhoneSE2", 750.90, "Apple", false);
+        Product appleWatchUltra = new Product("AppleWatchUltra", 999.00, "aPple", true);
+        productRepository.saveAll(List.of(iPhone14pro, slmini, pixel7a, slflex, Pixel6a, iPhoneSE2, appleWatchUltra));
+
+        assertEquals(7, productRepository.findAll().size());
+
+        ResponseEntity<Map> responseEntity = restTemplate.getForEntity(baseUrl+"/search", Map.class);
+        Map<String, List<Map<String, Object>>> groupedProducts = responseEntity.getBody();
+
+        assertNotNull(groupedProducts);
+        assertFalse(groupedProducts.isEmpty());
+
+        assertTrue(groupedProducts.containsKey("Apple"));
+        assertTrue(groupedProducts.containsKey("Bose"));
+        assertTrue(groupedProducts.containsKey("Google"));
+
+        assertEquals(3, groupedProducts.get("Apple").size());
+        assertEquals(2, groupedProducts.get("Bose").size());
+        assertEquals(2, groupedProducts.get("Google").size());
+
+        assertProductsSortedByPrice(groupedProducts.get("Apple"));
+        assertProductsSortedByPrice(groupedProducts.get("Bose"));
+        assertProductsSortedByPrice(groupedProducts.get("Google"));
+
+    }
+
+    @Test
+    void givenProducts_whenSearchWithParameters_thenShouldReturnFilteredAndSortedProducts() {
+        Product iPhone14pro = new Product("iPhone14Pro", 1100.00, "apple", true);
+        Product slmini = new Product("SoundLink Mini", 149.95, "Bose", false);
+        Product pixel7a = new Product("Pixel7A", 800.90, "gOogle", true);
+        Product slflex = new Product("SoundLink Flex", 164.95, "bose", true);
+        Product Pixel6a = new Product("Pixel61", 345.00, "Google", true);
+        Product iPhoneSE2 = new Product("iPhoneSE2", 750.90, "Apple", false);
+        Product appleWatchUltra = new Product("AppleWatchUltra", 1200.00, "aPple", true);
+        productRepository.saveAll(List.of(iPhone14pro, slmini, pixel7a, slflex, Pixel6a, iPhoneSE2, appleWatchUltra));
+
+        assertEquals(7, productRepository.findAll().size());
+
+        ResponseEntity<Map> responseEntity = restTemplate.getForEntity(baseUrl + "/search" +
+                "?minPrice=1000&brand=Apple&onSale=true", Map.class);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        Map<String, List<Map<String, Object>>> groupedProducts = responseEntity.getBody();
+
+        assertNotNull(groupedProducts);
+        assertFalse(groupedProducts.isEmpty());
+        assertTrue(groupedProducts.containsKey("apple"));
+        assertEquals(2, groupedProducts.get("apple").size());
+        assertProductsSortedByPrice(groupedProducts.get("apple"));
+    }
+
+
+    private void assertProductsSortedByPrice(List<Map<String, Object>> products) {
+        Double previousPrice = null;
+        for (Map<String, Object> product : products) {
+            Double currentPrice = (Double) product.get("price");
+            if (previousPrice != null) {
+                assertTrue(currentPrice >= previousPrice, "Products are not sorted by price");
+            }
+            previousPrice = currentPrice;
+        }
     }
 }
