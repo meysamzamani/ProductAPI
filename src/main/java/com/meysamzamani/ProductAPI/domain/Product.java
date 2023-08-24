@@ -32,7 +32,7 @@ public class Product {
         this.onSale = onSale;
     }
 
-    public Product(Long id, String name, double price, String brand, boolean onSale) {
+    protected Product(Long id, String name, double price, String brand, boolean onSale) {
         this.id = id;
         this.name = name;
         this.price = price;

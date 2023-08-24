@@ -3,6 +3,11 @@ package com.meysamzamani.ProductAPI.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
@@ -55,6 +60,14 @@ class ProductTest {
                 "}";
 
         assertEquals(expectedString, product.toString());
+    }
+
+    @Test
+    void givenProducts_whenIsSame_thenShouldEquals() {
+        Product product1 = new Product("iPhone14Pro", 1100.21, "Apple", false);
+        Product product2 = new Product("iPhone14Pro", 1100.21, "Apple", false);
+
+        assertThat(product1).usingRecursiveComparison().isEqualTo(product2);
     }
 
 }
