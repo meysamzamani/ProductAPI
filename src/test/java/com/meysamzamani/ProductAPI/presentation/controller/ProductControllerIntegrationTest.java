@@ -9,7 +9,6 @@ import com.meysamzamani.ProductAPI.infrastructure.persistence.UserRepository;
 import com.meysamzamani.ProductAPI.presentation.dto.AuthResponseDTO;
 import com.meysamzamani.ProductAPI.presentation.dto.ProductUpdateDTO;
 import com.meysamzamani.ProductAPI.presentation.dto.SignInRequestDTO;
-import com.meysamzamani.ProductAPI.presentation.dto.SignUpRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
