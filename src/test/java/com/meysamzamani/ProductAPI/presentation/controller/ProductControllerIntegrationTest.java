@@ -1,8 +1,15 @@
 package com.meysamzamani.ProductAPI.presentation.controller;
 
+import com.meysamzamani.ProductAPI.application.AuthenticationService;
 import com.meysamzamani.ProductAPI.domain.Product;
+import com.meysamzamani.ProductAPI.domain.Role;
+import com.meysamzamani.ProductAPI.domain.User;
 import com.meysamzamani.ProductAPI.infrastructure.persistence.ProductRepository;
+import com.meysamzamani.ProductAPI.infrastructure.persistence.UserRepository;
+import com.meysamzamani.ProductAPI.presentation.dto.AuthResponseDTO;
 import com.meysamzamani.ProductAPI.presentation.dto.ProductUpdateDTO;
+import com.meysamzamani.ProductAPI.presentation.dto.SignInRequestDTO;
+import com.meysamzamani.ProductAPI.presentation.dto.SignUpRequestDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -28,11 +36,18 @@ class ProductControllerIntegrationTest {
     int port;
 
     String baseUrl = "http://localhost";
+    static String authUrl = "http://localhost";
 
     static RestTemplate restTemplate;
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    AuthenticationService authenticationService;
 
     @BeforeAll
     static void init() {
@@ -43,6 +58,22 @@ class ProductControllerIntegrationTest {
     void setUp() {
         baseUrl = baseUrl.concat(":").concat(port+"").concat("/api/v1.0/products");
         productRepository.deleteAll();
+        userRepository.deleteAll();
+
+        User user = new User("test","test","test@test.com","$2a$10$y/vDFfoBC8nFvGv/YXsX0./db/ji0S8EIos6lOA8R1ri6z9Wf.THG", Role.USER);
+        userRepository.save(user);
+
+        SignInRequestDTO signIn = new SignInRequestDTO("test@test.com","12345");
+        AuthResponseDTO response = authenticationService.signin(signIn);
+
+        restTemplate.getInterceptors().add((request, body, clientHttpRequestExecution) -> {
+            HttpHeaders headers = request.getHeaders();
+            if (!headers.containsKey("Authorization")) {
+                String token = "Bearer " + response.getToken();
+                request.getHeaders().add("Authorization", token);
+            }
+            return clientHttpRequestExecution.execute(request, body);
+        });
     }
 
     @AfterEach
