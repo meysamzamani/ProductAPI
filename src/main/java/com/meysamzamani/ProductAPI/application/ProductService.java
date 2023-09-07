@@ -54,7 +54,7 @@ public class ProductService {
                 existProduct.setName(productUpdate.getName());
             }
 
-            if (productUpdate.getPrice() > 0) {
+            if (productUpdate.getPrice() >= 0) {
                 existProduct.setPrice(productUpdate.getPrice());
             }
 
