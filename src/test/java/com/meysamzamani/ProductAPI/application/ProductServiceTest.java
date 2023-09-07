@@ -1,6 +1,7 @@
 package com.meysamzamani.ProductAPI.application;
 
 import com.meysamzamani.ProductAPI.domain.Product;
+import com.meysamzamani.ProductAPI.infrastructure.persistence.CampaignRepository;
 import com.meysamzamani.ProductAPI.infrastructure.persistence.ProductRepository;
 import com.meysamzamani.ProductAPI.presentation.dto.GroupedProductDTO;
 import com.meysamzamani.ProductAPI.presentation.dto.ProductUpdateDTO;
@@ -26,11 +27,15 @@ public class ProductServiceTest {
 
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    CampaignRepository campaignRepository;
+
     ProductService productService;
 
     @BeforeEach
     void setup() {
-        productService = new ProductService(productRepository);
+        productService = new ProductService(productRepository, campaignRepository);
     }
 
     @Test

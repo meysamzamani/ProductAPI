@@ -173,3 +173,49 @@ By creating appropriate indexes on the columns used in filtering and sorting, we
 - Creating a compound index on the `brand` and `price` columns would greatly improve the performance of queries that require sorting by brand and price. This index allows the database engine to quickly retrieve and order the data based on both attributes.
 
 To ensure optimal query performance, it's recommended to work closely with database administrator or team to identify the right indexing strategy based on the specific use cases and query patterns of application. Implementing proper indexes can have a substantial impact on the overall responsiveness and scalability of Product API microservice.
+
+
+### Campaign Endpoint
+
+Base on this task we need to define product promotion campaign so I start with defining campaign model and campaign contain startDate and endDate and a subset of products.
+Each product in active campaign must have an ON SALE flag in search endpoint.
+
+## Architecture of campaign 
+
+    - Domain Model 
+    - Service Layer
+    - Controller Layer
+    - Repository Layer
+
+## Part of products that need to change 
+
+    - Product Service (Added campaignRepository and change in grouped ) 
+
+
+## Api structure
+
+# Create a campaign
+
+    POST localhost:8080/api/v1.0/campaign
+
+Request:
+
+CampaignRequestDTO
+
+```json
+    {"startDate":"2023/09/07", "endDate":"2023/10/07", "productIds":[1,2,..]}
+```
+
+Response :
+```json
+    {"campaignId":1, "startDate":"2023/09/07", "endDate":"2023/10/07", "products": [
+    {"id":1, "name": "iPhone14" , ...},
+    {"id":2, "name":  "BoseMx", ...}
+]}
+```
+
+DELETE localhost:8080/api/v1.0/campaign/{campaignId}
+
+```json
+
+```
