@@ -73,11 +73,9 @@ public class ProductService {
     }
 
     public Product getProduct(Long productId) {
-        Optional<Product> productOptional = productRepository.findById(productId);
-        if (productOptional.isPresent()) {
-            return productOptional.get();
-        }
-        throw new NotFoundException("Product with ID " + productId + " not found.");
+        return productRepository.findById(productId).orElseThrow(
+                () -> new NotFoundException("Product with ID " + productId + " not found.")
+        );
     }
 
     public Map<String,List<GroupedProductDTO>> searchProducts(String name, Double minPrice, Double maxPrice, String brand, Boolean onSale) {
